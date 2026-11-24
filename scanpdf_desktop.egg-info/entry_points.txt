@@ -1,0 +1,2 @@
+[gui_scripts]
+scanpdf = scanpdf.gui.app:main

@@ -1,0 +1,1 @@
+"""ScanPDF document scanner."""

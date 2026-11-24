@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scanpdf-desktop"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["numpy", "opencv-python", "Pillow>=9.1", "img2pdf", "pypdf"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+build = ["pyinstaller>=6.11"]
+
+[project.gui-scripts]
+scanpdf = "scanpdf.gui.app:main"
+
+[tool.setuptools.packages.find]
+include = ["scanpdf*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+

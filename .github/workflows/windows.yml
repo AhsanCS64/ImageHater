@@ -1,0 +1,51 @@
+name: ScanPDF tests and Windows build
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install ".[dev]"
+      - run: python -m pytest -q
+
+  package:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install ".[build]"
+      - run: python -m PyInstaller --clean --noconfirm ScanPDF.spec
+      - name: Verify desktop window opens
+        shell: pwsh
+        run: |
+          $app = Start-Process ./dist/ScanPDF/ScanPDF.exe -PassThru
+          try {
+            foreach ($attempt in 1..60) {
+              $app.Refresh()
+              if ($app.HasExited) { throw "ScanPDF exited during startup." }
+              if ($app.MainWindowTitle -eq "ScanPDF") { break }
+              Start-Sleep -Seconds 1
+            }
+            if ($app.MainWindowTitle -ne "ScanPDF") { throw "ScanPDF window did not appear." }
+          } finally {
+            if (!$app.HasExited) { $app.Kill() }
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ScanPDF-Windows-x64
+          path: dist/ScanPDF/
+          if-no-files-found: error
