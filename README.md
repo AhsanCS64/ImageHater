@@ -1,6 +1,6 @@
-# ScanPDF
+# ImageHater
 
-Turn phone photos into a straightened, cleaned, multi-page PDF that fits an upload limit. ScanPDF runs locally using Tkinter and classic OpenCV.
+ImageHater is the home of **ScanPDF**, a desktop app that turns phone photos into straightened, cleaned-up PDFs that fit an upload limit. All image processing runs locally using OpenCV.
 
 | Angled input | ScanPDF output · Black & white |
 | --- | --- |
